@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login | Barakah Aluminium</title>
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #222;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+      color: #f4f4f4;
+    }
+    .login-container {
+      background-color: #333;
+      padding: 40px;
+      border-radius: 8px;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+      width: 100%;
+      max-width: 400px;
+      text-align: center;
+      color: #f4f4f4;
+    }
+    .login-container h1 {
+      margin-bottom: 30px;
+      color: #007bff;
+    }
+    .login-container .form-group {
+      margin-bottom: 20px;
+      text-align: left;
+    }
+    .login-container label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: bold;
+      color: #f4f4f4;
+    }
+    .login-container input[type="text"],
+    .login-container input[type="password"] {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #555;
+      border-radius: 5px;
+      box-sizing: border-box;
+      background-color: #444;
+      color: #f4f4f4;
+    }
+    .login-container input[type="text"]::placeholder,
+    .login-container input[type="password"]::placeholder {
+        color: #bbb;
+    }
+    .login-container button {
+      background-color: #ffc107;
+      color: #333;
+      padding: 12px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 1.1rem;
+      font-weight: bold;
+      width: 100%;
+      margin-top: 10px;
+    }
+    .login-container button:hover {
+      background-color: #e0a800;
+    }
+    .login-container .error-message {
+      color: #dc3545;
+      margin-top: 10px;
+      font-size: 0.9rem;
+      display: none;
+    }
+    .back-to-home {
+      display: block;
+      margin-top: 20px;
+      color: #007bff;
+      text-decoration: none;
+      font-size: 0.9rem;
+    }
+    .back-to-home:hover {
+      text-decoration: underline;
+    }
+    /* Style untuk tombol Google */
+    .g_id_signin {
+        margin-top: 20px;
+        display: flex;
+        justify-content: center;
+        width: 100%; /* Agar tombol rata tengah dan menyesuaikan lebar */
+    }
+    .g_id_signin > div {
+        margin: 0 auto; /* Tengahkankan div di dalam flex container */
+    }
+  </style>
+</head>
+<body>
+  <div class="login-container">
+    <h1>Login ke Akun Anda</h1>
+    <form id="loginForm">
+      <div class="form-group">
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="username" required>
+      </div>
+      <div class="form-group">
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" required>
+      </div>
+      <p id="errorMessage" class="error-message">Username atau password salah!</p>
+      <button type="submit">Login</button>
+    </form>
+
+    <div class="g_id_signin"
+      data-type="standard"
+      data-size="large"
+      data-theme="outline"
+      data-text="sign_in_with"
+      data-shape="rectangular"
+      data-logo_alignment="left"
+      data-width="300" data-client_id="GANTI_DENGAN_CLIENT_ID_ANDA" data-callback="handleCredentialResponse">
+    </div>
+
+    <a href="toko2.html" class="back-to-home">Kembali ke Beranda</a>
+  </div>
+
+  <script>
+    // FUNGSI CALLBACK GOOGLE LOGIN
+    function handleCredentialResponse(response) {
+      // response.credential adalah ID token JWT
+      const idToken = response.credential;
+      
+      // DEKODIFIKASI SISI CLIENT (Hanya untuk demonstrasi, TIDAK UNTUK PRODUKSI ASLI)
+      // Token HARUS diverifikasi di SERVER-SIDE untuk keamanan!
+      const decodedToken = JSON.parse(atob(idToken.split('.')[1]));
+      console.log('ID Token:', idToken);
+      console.log('Decoded Token (Client-side):', decodedToken);
+
+      // Anda akan mendapatkan informasi profil dasar seperti nama, email, gambar
+      const userName = decodedToken.name;
+      const userEmail = decodedToken.email;
+
+      // SIMULASI LOGIN BERHASIL DENGAN GOOGLE (Sisi Klien)
+      localStorage.setItem("isLoggedIn", "true");
+      localStorage.setItem("loggedInUser", userName); // Simpan nama pengguna dari Google
+      localStorage.setItem("userEmail", userEmail); // Simpan email pengguna dari Google
+
+      alert(`Login dengan Google berhasil! Selamat datang, ${userName}`);
+      window.location.href = "keranjang.html"; // Redirect ke halaman keranjang
+      
+      // DI SINI ADALAH TEMPAT UNTUK MENGIRIM idToken KE SERVER ANDA
+      // fetch('/api/google-login', {
+      //   method: 'POST',
+      //   headers: {
+      //     'Content-Type': 'application/json',
+      //   },
+      //   body: JSON.stringify({ id_token: idToken }),
+      // })
+      // .then(response => response.json())
+      // .then(data => {
+      //   if (data.success) {
+      //     localStorage.setItem("isLoggedIn", "true");
+      //     localStorage.setItem("loggedInUser", data.userName); // Ambil nama dari server
+      //     alert("Login dengan Google berhasil!");
+      //     window.location.href = "keranjang.html";
+      //   } else {
+      //     alert("Login gagal: " + data.message);
+      //   }
+      // })
+      // .catch(error => {
+      //   console.error('Error during
